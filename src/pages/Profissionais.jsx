@@ -94,6 +94,33 @@ const Profissionais = () => {
       }
     }
   ];
+
+  const onSubmit = data => {
+    if (selectedId !== null) {
+      authApi.put(`/profissional/${selectedId}`, data)
+        .then(response => {
+          updateProfissionais();
+          setCreateDialogOpen(false);
+          reset(defaultValues);
+          showMessage("Profissional atualizado com sucesso", "success");
+        })
+        .catch(error => {
+          showMessage("Dados inválidos", "error");
+        });
+    } else {
+      authApi.post("/profissional", data)
+        .then(response => {
+          updateProfissionais();
+          setCreateDialogOpen(false);
+          reset(defaultValues);
+          showMessage("Profissional cadastrado com sucesso", "success");
+        })
+        .catch(error => {
+          showMessage("Dados inválidos", "error");
+        });
+    }
+  }
+
   return (
     <>
       <Stack direction="row">
