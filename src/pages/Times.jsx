@@ -81,6 +81,60 @@ const Times = () => {
             />
 
             <Dialog open={integranteDialogOpen}
+                    fullWidth={true}
+                    maxWidth="lg"
+                    onClose={() => {
+                        reset(defaultValues)
+                       setIntegranteDialogOpen(false);
+                    }}
+                    scroll="paper"
+            >
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <DialogTitle>{acao === "adicao" ? "Adicionar" : "Remover"} integrante</DialogTitle>
+                    <DialogContent>
+                        <Grid container spacing={2} sx={{mt: 1}}>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="integrante">Integrante</InputLabel>
+                                    <Controller
+                                        defaultValue={[]}
+                                        name="integrante"
+                                        control={control}
+                                        render={({field}) => (
+                                            <Select
+                                                {...field}
+                                                labelId="integrante"
+                                                id="integrante-select"
+                                                label="Integrante"
+                                            >
+                                                {profissionaisDisponiveis.map(profissional => (
+                                                    <MenuItem key={`profissional-${profissional.id}`}
+                                                              value={profissional.id}>
+                                                        {profissional.nome}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        )}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={() => {
+                                setIntegranteDialogOpen(false);
+                            }}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="contained"
+                            type="submit">
+                            Confirmar
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
 
 
                );
