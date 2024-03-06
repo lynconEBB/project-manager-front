@@ -125,7 +125,11 @@ const Profissionais = () => {
     <>
       <Stack direction="row">
         <Typography variant="h4" sx={{ display: "inline", mr: 2 }}>Profissionais</Typography>
-        <Button variant="contained" size="small" color="success" startIcon={<AddIcon />} onClick={() => setCreateDialogOpen(true)}>Cadastrar</Button>
+        <Button 
+          variant="contained"
+          size="small" 
+          color="success" 
+          startIcon={<AddIcon />} onClick={() => setCreateDialogOpen(true)}>Cadastrar</Button>
       </Stack>
       <Divider sx={{ my: 2 }} />
       <DataGrid
