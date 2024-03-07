@@ -78,6 +78,31 @@ const Projetos = () => {
         }
     ];
 
+    const onSubmit = data => {
+        if (selectedId !== null) {
+            authApi.put(`/projeto/${selectedId}`, data)
+                .then(response => {
+                    updateProjetos();
+                    setCreateDialogOpen(false);
+                    reset(defaultValues);
+                    showMessage("Projeto atualizado com sucesso", "success");
+                })
+                .catch(error => {
+                    showMessage("Dados inválidos", "error");
+                });
+        } else {
+            authApi.post("/projeto", data)
+                .then(response => {
+                    updateProjetos();
+                    setCreateDialogOpen(false);
+                    reset(defaultValues);
+                    showMessage("Projeto cadastrado com sucesso", "success");
+                })
+                .catch(error => {
+                    showMessage("Dados inválidos", "error");
+                });
+        }
+    }
 
     return (
         <>
