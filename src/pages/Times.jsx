@@ -60,11 +60,104 @@ const Times = () => {
             headerName: "Ações",
             renderCell: ({ row }) => {
                 return (
+                    <>
+                        <IconButton onClick={() => {
+                            authApi.delete(`/time/${row.id}`)
+                                .then(response => {
+                                    showMessage("Profissional excluido com sucesso!");
+                                    updateProfissionais();
+                                })
+                                .catch(error => {
+                                    showMessage("Nao foi excluir este profissional!", "error");
+                                })
+                        }}>
+                            <DeleteIcon />
+                        </IconButton>
+
+
+                        <IconButton onClick={() => {
+                            setSelectedId(row.id);
+                            setCreateDialogOpen(true);
+                            setAcao("cadastro");
+                            for (let key in row) {
+                                setValue(key, row[key]);
+                            }
+                        }}>
+                            <EditIcon />
+                        </IconButton>
+
+                        <IconButton onClick={() => {
+                            const disp = todosProfissionais.filter(inte => {
+                                const ret = row.integrantes.find(i => i.id === inte.id);
+                                return ret === undefined;
+                            });
+                            setProfissionaisDisponiveis(disp);
+                            setIntegranteDialogOpen(true);
+                            setSelectedId(row.id);
+                            setAcao("adicao");
+                        }}>
+                            <PersonAddIcon/>
+                        </IconButton>
+
+                        <IconButton onClick={() => {
+                            setProfissionaisDisponiveis(row.integrantes);
+                            setIntegranteDialogOpen(true);
+                            setSelectedId(row.id);
+                            setAcao("remocao");
+                        }}>
+                            <PersonRemoveIcon/>
+                        </IconButton>
+                    </>
                 );
             }
         }
     ];
 
+    const onSubmit = data => {
+        if (acao === "adicao") {
+            authApi.post(`/time/${selectedId}/integrantes/${data.integrante}`,data)
+                .then(response => {
+                   updateTimes();
+                   setIntegranteDialogOpen(false);
+                   reset(defaultValues);
+                    setSelectedId(null);
+                   showMessage("Integrantes atualizados");
+                })
+        }
+        else if (acao === "remocao") {
+            authApi.delete(`/time/${selectedId}/integrantes/${data.integrante}`,data)
+                .then(response => {
+                    updateTimes();
+                    setIntegranteDialogOpen(false);
+                    reset(defaultValues);
+                    setSelectedId(null);
+                    showMessage("Integrantes atualizados");
+                })
+        }
+        else if (selectedId !== null) {
+            authApi.put(`/time/${selectedId}`, data)
+                .then(response => {
+                    updateTimes();
+                    setCreateDialogOpen(false);
+                    reset(defaultValues);
+                    showMessage("Time atualizado com sucesso", "success");
+                })
+                .catch(error => {
+                    showMessage("Dados inválidos", "error");
+                });
+        } else {
+            authApi.post("/time", data)
+                .then(response => {
+                    updateTimes();
+                    setCreateDialogOpen(false);
+                    reset(defaultValues);
+                    showMessage("Time cadastrado com sucesso", "success");
+                })
+                .catch(error => {
+                    showMessage("Dados inválidos", "error");
+                });
+        }
+    }
 
     return (
         <>
@@ -137,6 +230,54 @@ const Times = () => {
             </Dialog>
 
 
-               );
+            <Dialog
+                open={createDialogOpen}
+                fullWidth={true}
+                maxWidth="lg"
+                onClose={() => {
+                    setSelectedId(null);
+                    setCreateDialogOpen(false);
+                    reset(defaultValues);
+                }}
+                scroll="paper"
+            >
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <DialogTitle>Cadastro de Time</DialogTitle>
+                    <DialogContent>
+                        <Grid container spacing={2} sx={{mt: 1}}>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="nome"
+                                    control={control}
+                                    render={({field}) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Nome"
+                                        />)
+                                    }
+                                />
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={() => {
+                                setSelectedId(null);
+                                setCreateDialogOpen(false);
+                                reset(defaultValues);
+                            }}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="contained"
+                            type="submit">
+                            Confirmar
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
+        </>
+    );
 }
 export default Times;
