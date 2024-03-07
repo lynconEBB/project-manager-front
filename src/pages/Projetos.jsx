@@ -104,6 +104,145 @@ const Projetos = () => {
                 autoHeight={true}
             />
 
+            <Dialog
+                open={createDialogOpen}
+                fullWidth={true}
+                maxWidth="lg"
+                onClose={() => {
+                    setSelectedId(null);
+                    setCreateDialogOpen(false);
+                    reset(defaultValues);
+                }}
+                scroll="paper"
+            >
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <DialogTitle>{selectedId === null ? "Cadastro" : "Edição"} de Projeto</DialogTitle>
+                    <DialogContent>
+                        <Grid container spacing={2} sx={{ mt: 1 }}>
+                            <Grid item xs={6}>
+                                <Controller
+                                    name="nome"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Nome"
+                                        />)
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Controller
+                                    name="nomeCliente"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Cliente"
+                                        />)
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="objetivo"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Objetivo"
+                                        />)
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Controller
+                                    name="inicio"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Inicio"
+                                        />)
+                                    }
+                                />
+                            </Grid>
+                            {selectedId !== null &&
+                            <Grid item xs={6}>
+                                <Controller
+                                    name="fim"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Fim"
+                                        />)
+                                    }
+                                />
+                            </Grid>}
+                            <Grid item xs={6}>
+                                <Controller
+                                    defaultValue={""}
+                                    name="valor"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            label="Valor"
+                                        />)
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="timeResponsavel">Time</InputLabel>
+                                    <Controller
+                                        defaultValue={[]}
+                                        name="timeResponsavel.id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                labelId="timeResponsavel"
+                                                id="time-select"
+                                                label="Time"
+                                            >
+                                                {times.map(time => (
+                                                    <MenuItem key={`time-${time.id}`}
+                                                              value={time.id}>
+                                                        {time.nome}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        )}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={() => {
+                                setSelectedId(null);
+                                setCreateDialogOpen(false);
+                                reset(defaultValues);
+                            }}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="contained"
+                            type="submit">
+                            Confirmar
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
         </>
     );
 }
