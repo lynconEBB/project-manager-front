@@ -79,6 +79,7 @@ const Times = () => {
                             setSelectedId(row.id);
                             setCreateDialogOpen(true);
                             setAcao("cadastro");
+
                             for (let key in row) {
                                 setValue(key, row[key]);
                             }
