@@ -10,9 +10,10 @@ import {
     ListItemIcon,
     IconButton
 } from "@mui/material";
+import GroupsIcon from '@mui/icons-material/Groups';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonIcon from '@mui/icons-material/Person';
-import ApartmentIcon from '@mui/icons-material/Apartment';
+import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import { Box } from "@mui/system";
 import {Link, NavLink, Navigate, Outlet, useLocation, useNavigate} from "react-router-dom";
 import { ShoppingBasket } from "@mui/icons-material";
@@ -31,7 +32,7 @@ const Navigation = () => {
             <AppBar position="fixed" open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar sx={{display:"flex", justifyContent:"space-between"}}>
                     <Typography variant="h6" noWrap component="div">
-                        Proj
+                        Project Manager
                     </Typography>
                     <Box sx={{display: "flex", justifyContent:"center", alignItems:"center"}}>
                         <IconButton sx={{color:"white"}} onClick={() => {signout(); navigate("/login");}}>
@@ -58,7 +59,7 @@ const Navigation = () => {
                         <ListItem key={3} disablePadding>
                             <ListItemButton onClick={() => navigate("/projetos")} selected={location.pathname == "/projetos"}>
                                 <ListItemIcon>
-                                    <ShoppingBasket/>
+                                    <DeveloperBoardIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary={"Projetos"} />
                             </ListItemButton>
@@ -66,7 +67,7 @@ const Navigation = () => {
                         <ListItem key={4} disablePadding>
                             <ListItemButton onClick={() => navigate("/times")} selected={location.pathname == "/times"}>
                                 <ListItemIcon>
-                                    <PersonIcon/>
+                                    <GroupsIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary="Times" />
                             </ListItemButton>
@@ -74,7 +75,7 @@ const Navigation = () => {
                         <ListItem key={5} disablePadding>
                             <ListItemButton onClick={() => navigate("/profissionais")} selected={location.pathname == "/profissionais"} >
                                 <ListItemIcon>
-                                    <ApartmentIcon/>
+                                    <PersonIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary="Profissionais" />
                             </ListItemButton>

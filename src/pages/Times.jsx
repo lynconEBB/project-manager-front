@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Divider, IconButton, Typography, Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid, TextField, Select, MenuItem, FormControl, InputLabel, Table, TableHead, TableBody, TableCell, TableRow } from "@mui/material";
+import { Divider, IconButton, Typography, Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid, TextField, Select, MenuItem, FormControl, InputLabel, Table, TableHead, TableBody, TableCell, TableRow, TableContainer, Paper } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit.js";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +8,7 @@ import { Stack } from "@mui/system";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { useForm, Controller } from "react-hook-form";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useApi } from "../services/api.js";
 import MessageContext from "../contexts/messageContext.jsx";
 
@@ -23,6 +24,7 @@ const Times = () => {
     const { handleSubmit, reset, setValue, control, resetField } = useForm({ defaultValues });
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [integranteDialogOpen, setIntegranteDialogOpen] = useState(false);
+    const [listaIntegranteDialog, setListaIntegranteDialog] = useState(false);
     const [times, setTimes] = useState([]);
     const [selectedId, setSelectedId] = useState(null);
     const [todosProfissionais, setTodosProfissionais] = useState([]);
@@ -56,7 +58,7 @@ const Times = () => {
         { field: 'nome', headerName: 'Nome', flex: 1 },
         {
             field: "actions",
-            width: 175,
+            width: 215,
             headerName: "Ações",
             renderCell: ({ row }) => {
                 return (
@@ -64,11 +66,11 @@ const Times = () => {
                         <IconButton onClick={() => {
                             authApi.delete(`/time/${row.id}`)
                                 .then(response => {
-                                    showMessage("Profissional excluido com sucesso!");
-                                    updateProfissionais();
+                                    showMessage("Time excluido com sucesso!");
+                                    updateTimes();
                                 })
                                 .catch(error => {
-                                    showMessage("Nao foi excluir este profissional!", "error");
+                                    showMessage("Nao foi excluir este time!", "error");
                                 })
                         }}>
                             <DeleteIcon />
@@ -97,7 +99,7 @@ const Times = () => {
                             setSelectedId(row.id);
                             setAcao("adicao");
                         }}>
-                            <PersonAddIcon/>
+                            <PersonAddIcon />
                         </IconButton>
 
                         <IconButton onClick={() => {
@@ -106,7 +108,15 @@ const Times = () => {
                             setSelectedId(row.id);
                             setAcao("remocao");
                         }}>
-                            <PersonRemoveIcon/>
+                            <PersonRemoveIcon />
+                        </IconButton>
+
+                        <IconButton onClick={() => {
+                            setProfissionaisDisponiveis(row.integrantes);
+                            setListaIntegranteDialog(true);
+                            setSelectedId(row.id);
+                        }}>
+                            <VisibilityIcon />
                         </IconButton>
                     </>
                 );
@@ -116,17 +126,17 @@ const Times = () => {
 
     const onSubmit = data => {
         if (acao === "adicao") {
-            authApi.post(`/time/${selectedId}/integrantes/${data.integrante}`,data)
+            authApi.post(`/time/${selectedId}/integrantes/${data.integrante}`, data)
                 .then(response => {
-                   updateTimes();
-                   setIntegranteDialogOpen(false);
-                   reset(defaultValues);
+                    updateTimes();
+                    setIntegranteDialogOpen(false);
+                    reset(defaultValues);
                     setSelectedId(null);
-                   showMessage("Integrantes atualizados");
+                    showMessage("Integrantes atualizados");
                 })
         }
         else if (acao === "remocao") {
-            authApi.delete(`/time/${selectedId}/integrantes/${data.integrante}`,data)
+            authApi.delete(`/time/${selectedId}/integrantes/${data.integrante}`, data)
                 .then(response => {
                     updateTimes();
                     setIntegranteDialogOpen(false);
@@ -164,7 +174,7 @@ const Times = () => {
         <>
             <Stack direction="row">
                 <Typography variant="h4" sx={{ display: "inline", mr: 2 }}>Times</Typography>
-                <Button variant="contained" size="small" color="success" startIcon={<AddIcon />} onClick={() => {setCreateDialogOpen(true); setAcao("cadastro")}}>Cadastrar</Button>
+                <Button variant="contained" size="small" color="success" startIcon={<AddIcon />} onClick={() => { setCreateDialogOpen(true); setAcao("cadastro") }}>Cadastrar</Button>
             </Stack>
             <Divider sx={{ my: 2 }} />
             <DataGrid
@@ -175,18 +185,18 @@ const Times = () => {
             />
 
             <Dialog open={integranteDialogOpen}
-                    fullWidth={true}
-                    maxWidth="lg"
-                    onClose={() => {
-                        reset(defaultValues)
-                       setIntegranteDialogOpen(false);
-                    }}
-                    scroll="paper"
+                fullWidth={true}
+                maxWidth="lg"
+                onClose={() => {
+                    reset(defaultValues)
+                    setIntegranteDialogOpen(false);
+                }}
+                scroll="paper"
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle>{acao === "adicao" ? "Adicionar" : "Remover"} integrante</DialogTitle>
                     <DialogContent>
-                        <Grid container spacing={2} sx={{mt: 1}}>
+                        <Grid container spacing={2} sx={{ mt: 1 }}>
                             <Grid item xs={12}>
                                 <FormControl fullWidth>
                                     <InputLabel id="integrante">Integrante</InputLabel>
@@ -194,7 +204,7 @@ const Times = () => {
                                         defaultValue={[]}
                                         name="integrante"
                                         control={control}
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <Select
                                                 {...field}
                                                 labelId="integrante"
@@ -203,7 +213,7 @@ const Times = () => {
                                             >
                                                 {profissionaisDisponiveis.map(profissional => (
                                                     <MenuItem key={`profissional-${profissional.id}`}
-                                                              value={profissional.id}>
+                                                        value={profissional.id}>
                                                         {profissional.nome}
                                                     </MenuItem>
                                                 ))}
@@ -230,6 +240,56 @@ const Times = () => {
                 </form>
             </Dialog>
 
+            <Dialog open={listaIntegranteDialog}
+                fullWidth={true}
+                maxWidth="lg"
+                onClose={() => {
+                    setSelectedId(null);
+                    reset(defaultValues)
+                    setListaIntegranteDialog(false);
+                }}
+                scroll="paper"
+            >
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <DialogTitle>Integrantes do projeto</DialogTitle>
+
+                    <DialogContent>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Nome</TableCell>
+                                        <TableCell>Especialidade</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {profissionaisDisponiveis.map(prof => {
+                                        return (<TableRow
+                                            key={prof.id}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell component="th" scope="row"> {prof.nome} </TableCell>
+                                            <TableCell >{prof.especialidade.nome}</TableCell>
+                                        </TableRow>)
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                setListaIntegranteDialog(false);
+                            }}>
+                            Fechar
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
+
 
             <Dialog
                 open={createDialogOpen}
@@ -245,12 +305,12 @@ const Times = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle>Cadastro de Time</DialogTitle>
                     <DialogContent>
-                        <Grid container spacing={2} sx={{mt: 1}}>
+                        <Grid container spacing={2} sx={{ mt: 1 }}>
                             <Grid item xs={12}>
                                 <Controller
                                     name="nome"
                                     control={control}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             {...field}
                                             fullWidth
