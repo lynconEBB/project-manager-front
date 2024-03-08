@@ -73,6 +73,30 @@ const Projetos = () => {
             headerName: "Ações",
             renderCell: ({ row }) => {
                 return (
+                    <>
+                        <IconButton onClick={() => {
+                            authApi.delete(`/projeto/${row.id}`)
+                                .then(response => {
+                                    showMessage("Projeto excluido com sucesso!");
+                                    updateProjetos();
+                                })
+                                .catch(error => {
+                                    showMessage("Nao foi excluir este projeto!", "error");
+                                })
+                        }}>
+                            <DeleteIcon />
+                        </IconButton>
+
+                        <IconButton onClick={() => {
+                            setSelectedId(row.id);
+                            setCreateDialogOpen(true);
+                            for (let key in row) {
+                                setValue(key, row[key]);
+                            }
+                        }}>
+                            <EditIcon />
+                        </IconButton>
+                    </>
                 );
             }
         }
