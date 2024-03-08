@@ -112,7 +112,6 @@ const Times = () => {
                         </IconButton>
 
                         <IconButton onClick={() => {
-                            console.log(row.integrantes);
                             setProfissionaisDisponiveis(row.integrantes);
                             setListaIntegranteDialog(true);
                             setSelectedId(row.id);
